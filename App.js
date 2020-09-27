@@ -105,9 +105,51 @@ function HomeTabScreen({navigation}){
 
       <View style={{
         flex: 3,
-        backgroundColor: "#FFFFFF"
+        marginHorizontal: 18
       }}>
+      <Text
+      style={{
+        fontSize: 14
+      }}
+      >5 Transaksi Terakhir Anda</Text>
+      <View
+      style={{
+        backgroundColor: "#FFFFFF",
+        height: 72,
+        marginTop: 8,
+        borderRadius: 8,
+      }}
+      >
+      <View
+      style={{
+        flex: 1,
+        flexDirection: 'row',
+        borderRadius: 8,
+      }}
+      >
+      <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+      >
+      <Ionicons name={'trail-sign'} size={24} style={{ textAlign: 'center' }} />
+      </View>
 
+      <View
+      style={{
+        flex: 3,
+        justifyContent: 'center'
+      }}
+      >
+      <View>
+      <Text>Rp. 80.000</Text>
+      </View>
+      <Text>Transfer ke 082240206862</Text>
+      </View>
+      </View>
+      </View>
       </View>
     </View>
   );
