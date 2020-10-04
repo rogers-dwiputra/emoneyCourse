@@ -1,244 +1,104 @@
-import * as React from 'react';
-import { Button, Text, TextInput, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Button, Text, TextInput, View, ToastAndroid, FlatList } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-community/async-storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TouchableHighlight } from 'react-native-gesture-handler';
+import axios from 'axios';
 
-const AuthContext = React.createContext();
-
-function SplashScreen() {
-  return (
-    <View>
-      <Text>Loading...</Text>
-    </View>
-  );
-}
-
-function HomeTabScreen({navigation}){
-
-  return (
-    <View style={{
-      backgroundColor: "#FOFOFO",
-      flex: 1
-    }}>
-      <View style={{
-        flex: 1,
-        backgroundColor: "#FFFFFF"
-      }}>
-
-      </View>
-
-      <View style={{
-        flex: 1,
-        flexDirection: 'row',
-        backgroundColor: "#4982C1",
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        marginHorizontal: 16,
-        marginTop: 16,
-        marginBottom: 16
-      }}>
-        <View>
-        <TouchableHighlight
-        onPress={() => {
-          navigation.navigate("TopUp");
-        }}
-        style={{
-          backgroundColor: "#FFFFFF",
-          padding: 24
-        }}>
-        <Ionicons name={'add-outline'} size={24} />
-        </TouchableHighlight>
-        <Text style={{
-          marginTop: 4,
-          textAlign: 'center',
-          fontSize: 14,
-          fontWeight: 'bold',
-          color: "#FFFFFF"
-        }}>Top Up</Text>
-        </View>
-        
-        <View>
-        <TouchableHighlight
-        style={{
-          backgroundColor: "#FFFFFF",
-          padding: 24
-        }}
-        onPress={() => {
-          navigation.navigate("QrPay");
-        }}>
-        <Ionicons name={'qr-code-outline'} size={24} />
-        </TouchableHighlight>
-        <Text style={{
-          marginTop: 4,
-          textAlign: 'center',
-          fontSize: 14,
-          fontWeight: 'bold',
-          color: "#FFFFFF"
-        }}>QR Pay</Text>
-        </View>
-
-        <View>
-        <TouchableHighlight
-        style={{
-          backgroundColor: "#FFFFFF",
-          padding: 24
-        }}
-        onPress={() => {
-          navigation.navigate("Transfer");
-        }}>
-        <Ionicons name={'send-outline'} size={24} />
-        </TouchableHighlight>
-        <Text style={{
-          marginTop: 4,
-          textAlign: 'center',
-          fontSize: 14,
-          fontWeight: 'bold',
-          color: "#FFFFFF"
-        }}>Transfer</Text>
-        </View>
-
-      </View>
-
-      <View style={{
-        flex: 3,
-        marginHorizontal: 18
-      }}>
-      <Text
-      style={{
-        fontSize: 14
-      }}
-      >5 Transaksi Terakhir Anda</Text>
-      <View
-      style={{
-        backgroundColor: "#FFFFFF",
-        height: 72,
-        marginTop: 8,
-        borderRadius: 8,
-      }}
-      >
-      <View
-      style={{
-        flex: 1,
-        flexDirection: 'row',
-        borderRadius: 8,
-      }}
-      >
-      <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}
-      >
-      <Ionicons name={'trail-sign'} size={24} style={{ textAlign: 'center' }} />
-      </View>
-
-      <View
-      style={{
-        flex: 3,
-        justifyContent: 'center'
-      }}
-      >
-      <View>
-      <Text>Rp. 80.000</Text>
-      </View>
-      <Text>Transfer ke 082240206862</Text>
-      </View>
-      </View>
-      </View>
-      </View>
-    </View>
-  );
-}
-
-function TopUpScreen(){
-  return (
-    <View>
-      <Text>TopUp Screen</Text>
-    </View>
-  );
-}
-
-function QrPayScreen(){
-  return (
-    <View>
-      <Text>QR Pay Screen</Text>
-    </View>
-  );
-}
+import {AuthContext} from './src/Context'
+import HomeTabScreen from './src/HomeTabScreen'
+import SplashScreen from './src/SplashScreen'
+import TopUpScreen from './src/TopUpScreen'
+import QrPayScreen from './src/QrPayScreen'
+import TransactionTabScreen from './src/TransactionTabScreen'
+import AccountTabScreen from './src/AccountTabScreen'
+import SignInScreen from './src/SignInScreen'
+import TopUpSuccessScreen from './src/TopUpSuccessScreen'
+import PaymentKonfirmasiScreen from './src/PaymentKonfirmasiScreen';
+import TransaksiDetailScreen from './src/TransaksiDetailScreen';
 
 function TransferScreen(){
-  return (
-    <View>
-      <Text>Transfer Screen</Text>
-    </View>
-  );
-}
+  const [nomorHandphone, setNomorHandphone] = useState('');
+  const [dataPenerima, setDataPenerima] = useState(null);
+  const [nominalTransfer, setNominalTransfer] = useState(0);
 
-function TransactionTabScreen(){
+  const apiCekNomorHandphone = () => {
+    // console.log(nomorHandphone)
+    axios.get('http://103.89.1.214/emoneycourseapi/index.php/api/transfer/checknumber?nomor_handphone='+nomorHandphone)
+    .then(function (response) {
+      // handle success
+      console.log(response.data);
+      if(response.data.status == "true"){
+        // console.log(response.data.data);
+        setDataPenerima(response.data.data)
+      }
+      else {
+        setDataPenerima(null)
+      }
+      
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+      setDataPenerima(null)
+    })
+    .then(function () {
+      // always executed
+    });
+  }
 
-  return (
-    <View>
-      <Text>Transaction</Text>
-    </View>
-  );
-}
+  const apiTransfer = () => {
+    //fungsi post transfer
+    //setelah transfer success, redirect ke halaman transfer success
+    console.log(nominalTransfer);
+  }
 
-function AccountTabScreen(){
-  const { signOut } = React.useContext(AuthContext);
   return (
     <View
     style={{
-      flex: 1
-    }}>
-      <View
+      marginHorizontal: 8
+    }}
+    >
+      <TextInput
+      placeholder="Nomor Handphone Tujuan"
+      onChangeText={(text) => { setNomorHandphone(text) }}
       style={{
-        backgroundColor: '#005690',
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
+        borderBottomWidth: 1,
+        marginBottom: 8
       }}
-      >
-      <Ionicons name={'person-circle-outline'} size={24} color={"#FFFFFF"} style={{ fontSize: 100, textAlign: 'center' }} />
-      <Text style={{ color: "#FFFFFF", textAlign: 'center', fontSize: 18 }}>R. Rogers Dwiputra Setiady</Text>
-      <Text style={{ color: "#FFFFFF", textAlign: 'center', fontSize: 18 }}>082240206862</Text>
-      </View>
+      value={nomorHandphone}
+      />
+      {
+        dataPenerima == null &&
+        <Button
+        title="Cek Nomor Handphone"
+        onPress={() => { apiCekNomorHandphone() }}
+        />
+      }
 
-      <View
-      style={{
-        flex: 2
-      }}>
-        <View
+      {
+        dataPenerima != null &&
+        <>
+        <Text style={{ marginBottom: 8 }}>Nama Penerima: { dataPenerima[0].nama_user }</Text>
+        <TextInput
+        placeholder="Nominal Transfer"
+        onChangeText={(text) => { setNominalTransfer(text) }}
         style={{
-          marginTop: 8,
-          marginHorizontal: 8
+          borderBottomWidth: 1,
+          marginBottom: 8
         }}
-        >
-          <Button title="UBAH PROFIL"/>
-        </View>
-        
-        <View
-        style={{
-          marginTop: 8,
-          marginHorizontal: 8
-        }}
-        >
-        <Button title="GANTI PASSWORD"/>
-        </View>
-
-        <View
-        style={{
-          marginTop: 8,
-          marginHorizontal: 8
-        }}
-        >
-        <Button title="Sign out" onPress={signOut} />
-        </View>
-      </View>
+        value={nominalTransfer}
+        />
+        <Button
+        title="Transfer"
+        onPress={() => { apiTransfer() }}
+        />
+        </>
+      }
+      
     </View>
   );
 }
@@ -291,36 +151,85 @@ function MainTabScreen() {
   );
 }
 
-function RegistrasiScreen() {
+function RegistrasiScreen({ navigation }) {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [nama, setNama] = useState("");
+  const [nomorHandphone, setNomorHandphone] = useState("");
+
+  useEffect(() => {
+    
+  });
+
+  const submitRegistrasi = async () => {
+    // console.log(email+" "+password+" "+nama+" "+nomorHandphone);
+    axios.post('http://103.89.1.214/emoneycourseapi/index.php/api/users/registrasi', {
+      email: email,
+      password: password,
+      nama: nama,
+      nomor_handphone: nomorHandphone
+    })
+    .then(function (response) {
+      if(response.data.status == "true"){
+        navigation.navigate('SignIn');
+      }
+      else {
+        ToastAndroid.show(response.data.msg, ToastAndroid.SHORT);
+      }
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
 
   return (
-    <View>
-      <Text>Registrasi Screen</Text>
-    </View>
-  );
-}
-
-function SignInScreen({navigation}) {
-  const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
-
-  const { signIn } = React.useContext(AuthContext);
-
-  return (
-    <View>
+    <View
+    style={{
+      marginHorizontal: 8
+    }}
+    >
       <TextInput
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
+      placeholder="Email"
+      style={{
+        borderBottomWidth: 1,
+        marginBottom: 8
+      }}
+      onChangeText={text => setEmail(text)}
+      value={email}
       />
       <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
+      placeholder="Password"
+      style={{
+        borderBottomWidth: 1,
+        marginBottom: 8
+      }}
+      onChangeText={text => setPassword(text)}
+      value={password}
       />
-      <Button title="Sign in" onPress={() => signIn({ username, password })} />
-      <Button title="Registrasi" style={{ marginTop: 16 }} onPress={() => navigation.navigate('Registrasi')} />
+      <TextInput
+      placeholder="Nama"
+      style={{
+        borderBottomWidth: 1,
+        marginBottom: 8
+      }}
+      onChangeText={text => setNama(text)}
+      value={nama}
+      />
+      <TextInput
+      placeholder="No Handphone"
+      style={{
+        borderBottomWidth: 1,
+        marginBottom: 8
+      }}
+      onChangeText={text => setNomorHandphone(text)}
+      value={nomorHandphone}
+      />
+      <Button
+      title="Submit"
+      onPress={() => { submitRegistrasi() }}
+      />
     </View>
   );
 }
@@ -386,15 +295,33 @@ export default function App({ navigation }) {
         // We will also need to handle errors if sign in failed
         // After getting token, we need to persist the token using `AsyncStorage`
         // In the example, we'll use a dummy token
+        console.log(data);
+        axios.post('http://103.89.1.214/emoneycourseapi/index.php/api/users/login', {
+          email: data.username,
+          password: data.password
+        })
+        .then( async (response) => {
+          // console.log(response.data);
+          if(response.data.status == 'true'){
+            try {
+              await AsyncStorage.setItem('userToken', response.data.data.id_user)
+              await AsyncStorage.setItem('email', response.data.data.email_user)
+              await AsyncStorage.setItem('nama', response.data.data.nama_user)
+              await AsyncStorage.setItem('nomorHandphone', response.data.data.nomor_handphone)
 
-        try {
-          await AsyncStorage.setItem('userToken', 'dummy-auth-token')
-        } catch (e) {
-          // saving error
-          console.log(e);
-        }
-
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+              dispatch({ type: 'SIGN_IN', token: response.data.data.id_user });
+            } catch (e) {
+              // saving error
+              console.log(e);
+            }
+          }
+          else {
+            ToastAndroid.show(response.data.msg, ToastAndroid.SHORT);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
       },
       signOut: async () => {
         try {
@@ -458,12 +385,24 @@ export default function App({ navigation }) {
             component={TopUpScreen}
             />
             <Stack.Screen
+            name="TopUpSuccess"
+            component={TopUpSuccessScreen}
+            />
+            <Stack.Screen
             name="QrPay"
             component={QrPayScreen}
             />
             <Stack.Screen
+            name="PaymentKonfirmasi"
+            component={PaymentKonfirmasiScreen}
+            />
+            <Stack.Screen
             name="Transfer"
             component={TransferScreen}
+            />
+            <Stack.Screen
+            name="TransaksiDetail"
+            component={TransaksiDetailScreen}
             />
             </>
           )}
