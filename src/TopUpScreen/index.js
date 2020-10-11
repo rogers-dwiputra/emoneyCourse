@@ -7,9 +7,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import axios from 'axios';
+import { WebView } from 'react-native-webview';
 
 export default function TopUpScreen({navigation}){
-    const [nominalTopUp, setNominalTopUp] = useState(0);
+    const [nominalTopUp, setNominalTopUp] = useState('0');
+    const [isMidtrans, setIsMidtrans] = useState(false);
+    const [midtransUrl, setMidtransUrl] = useState("");
+    const [orderId, setOrderId] = useState("");
 
     useEffect(() => {
     }, []);
@@ -19,17 +23,20 @@ export default function TopUpScreen({navigation}){
 
       axios({
         method: 'post',
-        url: 'http://103.89.1.214/emoneycourseapi/index.php/api/topup',
+        url: 'http://103.89.1.214/emoneycourseapi/index.php/api/snap/token',
         data: {
           id_user: id_user,
-          nominal_topup: nominalTopUp
+          nominal_topup: nominalTopUp,
         }
       }).then((response) => {
-        console.log(response);
         if(response.data.status == 'true'){
-          navigation.navigate('TopUpSuccess', {
-            data: response.data.data
-          })
+          // navigation.navigate('TopUpSuccess', {
+          //   data: response.data.data
+          // })
+          setMidtransUrl(response.data.data.redirect_url);
+          setOrderId(response.data.data.order_id);
+          setIsMidtrans(true);
+          // console.log(response.data.redirect_url);
         }
         else {
           ToastAndroid.show(response.data.msg, ToastAndroid.SHORT);
@@ -37,22 +44,41 @@ export default function TopUpScreen({navigation}){
       });
     }
 
-    return (
-      <View>
-        <Text>TopUp Screen</Text>
-        <TextInput
-        placeholder="Nominal Top Up"
-        style={{
-          borderBottomWidth: 1,
-          marginBottom: 8
+    if(isMidtrans == true){
+      return(
+        <WebView
+        source={{ uri: midtransUrl }}
+        onNavigationStateChange={(navState) => { 
+          console.log(navState.url); 
+          console.log("Order ID: "+orderId);
+          if(navState.url.search("basicteknologi.co.id") > 0)
+          { 
+            navigation.navigate('TopUpSuccess', {
+              orderId: orderId
+            });
+          } 
         }}
-        value={nominalTopUp}
-        onChangeText={text => setNominalTopUp(text)}
-        />
-        <Button
-        title="Submit"
-        onPress={() => ( submitTopUp() )}
-        />
-      </View>
-    );
+      />
+      )
+    }
+    else {
+      return (
+        <View>
+          <Text>TopUp Screen</Text>
+          <TextInput
+          placeholder="Nominal Top Up"
+          style={{
+            borderBottomWidth: 1,
+            marginBottom: 8
+          }}
+          value={nominalTopUp}
+          onChangeText={text => setNominalTopUp(text)}
+          />
+          <Button
+          title="Submit"
+          onPress={() => ( submitTopUp() )}
+          />
+        </View>
+      );
+    }
   }

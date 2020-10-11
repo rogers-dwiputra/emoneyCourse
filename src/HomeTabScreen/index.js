@@ -12,10 +12,16 @@ export default function HomeTabScreen({navigation}){
 
     const [saldo, setSaldo] = useState(0);
     const [transaksi, setTransaksi] = useState();
+
+    React.useEffect(() => {
+      const unsubscribe = navigation.addListener('focus', () => {
+        // Screen was focused
+        // Do something
+        getDashboardData()
+      });
   
-    useEffect(() => {
-      getDashboardData()
-    }, []);
+      return unsubscribe;
+    }, [navigation]);
   
     const getDashboardData = async () => {
       let id_user = await AsyncStorage.getItem('userToken');
@@ -23,7 +29,7 @@ export default function HomeTabScreen({navigation}){
       axios.get('http://103.89.1.214/emoneycourseapi/index.php/api/dashboard?id_user='+id_user)
       .then(function (response) {
         // handle success
-        console.log(response);
+        // console.log(response);
         setSaldo(response.data.data.saldo);
         setTransaksi(response.data.data.transaksi);
       })
@@ -37,7 +43,7 @@ export default function HomeTabScreen({navigation}){
     }
   
     const renderItem = (item) => {
-      console.log(item.item.berita_transaksi);
+      // console.log(item.item.berita_transaksi);
       return (
         <View
         style={{
