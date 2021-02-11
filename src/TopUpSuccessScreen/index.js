@@ -11,6 +11,8 @@ import axios from 'axios';
 export default function TopUpSuccessScreen({ route, navigation }){
     const { orderId } = route.params;
 
+    const [vaNumber, setVaNumber] = useState("");
+
     useEffect(() => {
       getTransInfo();
     }, []);
@@ -20,6 +22,7 @@ export default function TopUpSuccessScreen({ route, navigation }){
       .then(function (response) {
         // handle success
         console.log(response.data);
+        setVaNumber(response.data.data.va_number);
       })
       .catch(function (error) {
         // handle error
@@ -33,6 +36,7 @@ export default function TopUpSuccessScreen({ route, navigation }){
     return (
       <View>
         <Text>TopUp Success Screen</Text>
+        <Text>VA Number: {vaNumber}</Text>
       </View>
     );
   }
