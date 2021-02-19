@@ -1,28 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Text, TextInput, View, ToastAndroid, FlatList } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import AsyncStorage from '@react-native-community/async-storage';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { TouchableHighlight } from 'react-native-gesture-handler';
+import * as React from 'react';
+import { Button, Text, View } from 'react-native';
+import { useState } from 'react/cjs/react.development';
 import axios from 'axios';
 
-export default function TopUpSuccessScreen({ route, navigation }){
+export default function TopUpSuccessScreen({ navigation, route }){
     const { orderId } = route.params;
 
-    const [vaNumber, setVaNumber] = useState("");
+    const [transactionStatus, setTransactionStatus] = useState({});
 
-    useEffect(() => {
-      getTransInfo();
-    }, []);
+    React.useEffect(() => {
+      _getTransactionStatus();
+    })
 
-    const getTransInfo = async () => {
-      axios.get('http://103.89.1.214/emoneycourseapi/index.php/api/snap/transactionstatus?order_id='+orderId)
+    const _getTransactionStatus = () => {
+      axios.get(`https://emoneydti.basicteknologi.co.id/index.php/api/snap/transactionstatus?order_id=${orderId}`)
       .then(function (response) {
         // handle success
         console.log(response.data);
-        setVaNumber(response.data.data.va_number);
+        setTransactionStatus(response.data.data);
       })
       .catch(function (error) {
         // handle error
@@ -35,8 +30,16 @@ export default function TopUpSuccessScreen({ route, navigation }){
 
     return (
       <View>
-        <Text>TopUp Success Screen</Text>
-        <Text>VA Number: {vaNumber}</Text>
+        <Text>Nominal: {transactionStatus.nominal_topup}</Text>
+        <Text>Transaction Time: {transactionStatus.transaction_time}</Text>
+        <Text>Bank: {transactionStatus.bank}</Text>
+        <Text>VA Number: {transactionStatus.va_number}</Text>
+        <Button
+        title="Back to Home"
+        onPress={() => {
+          navigation.navigate('MainBottomTab');
+        }}
+        />
       </View>
     );
   }
