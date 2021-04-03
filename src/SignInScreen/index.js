@@ -10,22 +10,39 @@ export default function SignInScreen({ navigation }) {
     const { signIn } = React.useContext(AuthContext);
   
     return (
-      <View>
-        <TextInput
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <TextInput
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-        <Button title="Sign in" onPress={() => signIn({ email, password })} />
-        <TouchableOpacity style={{ marginTop: 8 }} onPress={() => { navigation.navigate('Registration') }}>
-          <Text style={{ textAlign: 'center' }}>Create Account</Text>
-        </TouchableOpacity>
+      <View style={{ flex: 1, marginHorizontal: 8 }}>
+        <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+          <Text style={{ textAlign: 'center', marginBottom: 8, fontSize: 24, color: '#4982C1' }}>E-Money</Text>
+        </View>
+        <View style={{ flex: 1 }}>
+          <TextInput
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            style={{
+              borderColor: '#C3C3C3',
+              borderWidth: 1,
+              borderRadius: 4,
+              marginBottom: 8
+            }}
+          />
+          <TextInput
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            style={{
+              borderColor: '#C3C3C3',
+              borderWidth: 1,
+              borderRadius: 4,
+              marginBottom: 8
+            }}
+          />
+          <Button title="Login" onPress={() => signIn({ email, password })} />
+          <TouchableOpacity style={{ marginTop: 8 }} onPress={() => { navigation.navigate('Registration') }}>
+            <Text style={{ textAlign: 'center' }}>Create Account</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }

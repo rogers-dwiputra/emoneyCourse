@@ -21,13 +21,20 @@ import TopUpSuccessScreen from './src/TopUpSuccessScreen'
 import TransferNominalScreen from './src/TransferNominalScreen'
 import TransferScreen from './src/TransferScreen'
 import TransferSuccessScreen from './src/TransferSuccessScreen'
+import Ionicons from 'react-native-vector-icons/Ionicons'
  
 const Tab = createBottomTabNavigator();
 
 function MainBottomTab() {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="HomeTab" component={HomeTab} />
+      <Tab.Screen name="HomeTab" component={HomeTab} 
+      options={{
+        tabBarLabel: 'Home',
+        tabBarIcon: ({ color, size }) => (
+          <Ionicons name="home-outline" size={20} />
+        ),
+      }}/>
       <Tab.Screen name="TransactionTab" component={TransactionTab} />
       <Tab.Screen name="SettingTab" component={SettingTab} />
     </Tab.Navigator>

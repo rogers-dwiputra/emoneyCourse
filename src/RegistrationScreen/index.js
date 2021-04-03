@@ -36,22 +36,22 @@ export default function RegistrationScreen({ navigation }) {
       <View style={{ flex: 1, paddingHorizontal: 8, marginTop: 16 }}>
         <TextInput
         placeholder="Email"
-        style={{ borderWidth: 1, borderColor: "#8c8c8c", marginBottom: 8 }}
+        style={{ borderWidth: 1, borderColor: "#C3C3C3", marginBottom: 8, borderRadius: 4 }}
         onChangeText={inputEmail => { setEmail(inputEmail) }}
         />
         <TextInput
         placeholder="Password"
-        style={{ borderWidth: 1, borderColor: "#8c8c8c", marginBottom: 8 }}
+        style={{ borderWidth: 1, borderColor: "#C3C3C3", marginBottom: 8, borderRadius: 4 }}
         onChangeText={inputPassword => { setPassword(inputPassword) }}
         />
         <TextInput
         placeholder="Nama"
-        style={{ borderWidth: 1, borderColor: "#8c8c8c", marginBottom: 8 }}
+        style={{ borderWidth: 1, borderColor: "#C3C3C3", marginBottom: 8, borderRadius: 4 }}
         onChangeText={inputNama => { setNama(inputNama) }}
         />
         <TextInput
         placeholder="Nomor Handphone"
-        style={{ borderWidth: 1, borderColor: "#8c8c8c", marginBottom: 8 }}
+        style={{ borderWidth: 1, borderColor: "#C3C3C3", marginBottom: 8, borderRadius: 4 }}
         onChangeText={inputNomorHandphone => { setNomorHandphone(inputNomorHandphone) }}
         />
         <View style={{ marginTop: 8 }}>
